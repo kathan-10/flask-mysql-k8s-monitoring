@@ -82,12 +82,6 @@ sum(rate(container_cpu_usage_seconds_total{pod=~".*flask.*",container!="POD"}[5m
 sum(rate(container_cpu_usage_seconds_total{pod=~".*mysql.*",container!="POD"}[5m])) by (pod) * 100
 ```
 
-### Flask Request Rate
-
-```promql
-sum(rate(flask_http_request_total[1m])) by (path)
-```
-
 ---
 
 ## Screenshots
