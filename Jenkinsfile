@@ -66,15 +66,15 @@ pipeline {
 
 		kubectl apply -f mysql-secret.yml
 
-                kubectl apply -f mysql-deployment.yml
+        kubectl apply -f mysql-deployment.yml
 		
 		kubectl apply -f mysql-service.yml
                                  
 		kubectl apply -f flask-deployment.yml
 
-                kubectl apply -f flask-service.yml
+        kubectl apply -f flask-service.yml
 
-                kubectl rollout restart deployment flask-app
+        kubectl rollout restart deployment flask-app
                 '''
             }
         }
