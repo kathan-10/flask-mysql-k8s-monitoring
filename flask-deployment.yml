@@ -20,7 +20,7 @@ spec:
       containers:
       - name: flask
 
-        image: kathan1205/devops-project
+        image: kathan1205/devops-project:1
 
         imagePullPolicy: Always
 

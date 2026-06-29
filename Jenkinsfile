@@ -63,6 +63,9 @@ pipeline {
             steps {
 
                 sh '''
+
+		kubectl apply -f mysql-secret.yml
+
                 kubectl apply -f mysql-deployment.yml
 		
 		kubectl apply -f mysql-service.yml
