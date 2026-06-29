@@ -1,7 +1,6 @@
-from flask import Flask, render_template, request, redirect, session, url_for
+from flask import Flask, render_template, request, redirect, session
 import mysql.connector
 import time
-from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
 
@@ -30,7 +29,7 @@ cursor = db.cursor()
 cursor.execute("""
 CREATE TABLE IF NOT EXISTS users (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    username VARCHAR(255) UNIQUE,
+    username VARCHAR(255),
     password VARCHAR(255)
 )
 """)
@@ -47,7 +46,28 @@ CREATE TABLE IF NOT EXISTS tasks (
 db.commit()
 
 
-# Login Page
+# Register
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+
+    if request.method == 'POST':
+
+        username = request.form['username']
+        password = request.form['password']
+
+        cursor.execute(
+            "INSERT INTO users (username, password) VALUES (%s, %s)",
+            (username, password)
+        )
+
+        db.commit()
+
+        return redirect('/login')
+
+    return render_template('register.html')
+
+
+# Login
 @app.route('/login', methods=['GET', 'POST'])
 def login():
 
@@ -57,13 +77,13 @@ def login():
         password = request.form['password']
 
         cursor.execute(
-            "SELECT * FROM users WHERE username=%s",
-            (username,)
+            "SELECT * FROM users WHERE username=%s AND password=%s",
+            (username, password)
         )
 
         user = cursor.fetchone()
 
-        if user and check_password_hash(user[2], password):
+        if user:
 
             session['user_id'] = user[0]
             session['username'] = user[1]
@@ -75,33 +95,7 @@ def login():
     return render_template('login.html')
 
 
-# Register Page
-@app.route('/register', methods=['GET', 'POST'])
-def register():
-
-    if request.method == 'POST':
-
-        username = request.form['username']
-        password = generate_password_hash(request.form['password'])
-
-        try:
-
-            cursor.execute(
-                "INSERT INTO users (username, password) VALUES (%s, %s)",
-                (username, password)
-            )
-
-            db.commit()
-
-            return redirect('/login')
-
-        except:
-            return "User already exists"
-
-    return render_template('register.html')
-
-
-# Home Page
+# Home
 @app.route('/')
 def index():
 
